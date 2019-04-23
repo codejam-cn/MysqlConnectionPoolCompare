@@ -6,8 +6,10 @@ using MySql.Data.MySqlClient;
 
 namespace MysqlConnectionPoolCompare
 {
-    class Program
+    public class Program
     {
+        public static int repeatTimes = 10000;
+
         private const string connStrDefault = "server=localhost;User Id=sa;password=guest;Database=leyan;Charset=utf8";
         private const string connStrPoolingTrue = "server=localhost;User Id=sa;password=guest;Database=leyan;Charset=utf8;Pooling=true;";
         private const string connStrPoolingFalse = "server=localhost;User Id=sa;password=guest;Database=leyan;Charset=utf8;Pooling=false;";
