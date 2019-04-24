@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
+using Autofac;
 using Dapper;
 using MysqlConnectionPoolCompare.Model;
 using MySql.Data.MySqlClient;
+using Autofac.Core;
 
 namespace MysqlConnectionPoolCompare
 {
@@ -16,13 +18,18 @@ namespace MysqlConnectionPoolCompare
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            //DI
+            var builder = new ContainerBuilder();
+            builder.RegisterType<QueryMysqlWithDefault>().As(typeof(IExecute));
+            var container = builder.Build(); //可是得到这个是为了干啥呢
 
-            using (MySqlConnection con = new MySqlConnection(connStrDefault))
+            
+
+            using (var scope = container.BeginLifetimeScope())
             {
-                var sql = $"select * from q_4_1_single_table t where t.id > 20 and t.question_description like '%在%';";
-                var list = con.Query<q_4_1_single_table>(sql);
+                var writer = scope.Resolve<IExecute>();
 
+                var defaultSpan = writer.Execute(connStrDefault);
             }
         }
     }
