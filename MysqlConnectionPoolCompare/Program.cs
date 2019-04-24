@@ -8,11 +8,13 @@ namespace MysqlConnectionPoolCompare
     /// </summary>
     public class Program
     {
-        public static int repeatTimes = 1000;
+        public static int repeatTimes = 500;
+        public static string sql = $"select * from q_4_1_single_table t where t.id > 20 and t.question_description like '%在%';";
 
-        private const string connStrDefault = "server=localhost;User Id=sa;password=guest;Database=leyan;Charset=utf8";
-        private const string connStrPoolingTrue = "server=localhost;User Id=sa;password=guest;Database=leyan;Charset=utf8;Pooling=true;";
-        private const string connStrPoolingFalse = "server=localhost;User Id=sa;password=guest;Database=leyan;Charset=utf8;Pooling=false;";
+        private const string connStrDefault = "server=localhost;User Id=sa1;password=guest1;Database=leyan;Charset=utf8";
+        private const string connStrPoolingTrue = "server=localhost;User Id=sa2;password=guest2;Database=leyan;Charset=utf8;Pooling=true;";
+        private const string connStrPoolingFalse = "server=localhost;User Id=sa3;password=guest3;Database=leyan;Charset=utf8;Pooling=false;";
+        private const string connStrCsPooling = "server=localhost;User Id=sa4;password=guest4;Database=leyan;Charset=utf8;Pooling=false;";
 
         static void Main(string[] args)
         {
@@ -30,8 +32,9 @@ namespace MysqlConnectionPoolCompare
                 var queryInstance3 = scope.ResolveKeyed<IExecute>(PoolingTypeEnum.PoolingFalse);
                 var span3 = queryInstance3.Execute(connStrPoolingFalse);
 
+                //C#自己写的连接池
                 var queryInstance4 = scope.ResolveKeyed<IExecute>(PoolingTypeEnum.CsPooling);
-                var span4 = queryInstance4.Execute(connStrDefault);
+                var span4 = queryInstance4.Execute(connStrCsPooling);
 
                 Console.WriteLine($"Default = {span1}");
                 Console.WriteLine($"PoolingTrue = {span2}");
