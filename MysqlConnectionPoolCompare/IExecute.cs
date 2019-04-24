@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MysqlConnectionPoolCompare
+﻿namespace MysqlConnectionPoolCompare
 {
     internal interface IExecute
     {

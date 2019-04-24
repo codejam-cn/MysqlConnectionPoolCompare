@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MysqlConnectionPoolCompare
+﻿namespace MysqlConnectionPoolCompare
 {
     /// <summary>
     /// 显示指定不使用线程池的连接字符串
@@ -11,7 +7,7 @@ namespace MysqlConnectionPoolCompare
     {
         public int Execute(string connStr)
         {
-            return 11;
+            return ExecuteQuery.Execute(connStr);
         }
     }
 }

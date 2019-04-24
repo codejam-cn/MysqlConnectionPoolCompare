@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Autofac;
+﻿using Autofac;
 
 /*
  *https://www.cnblogs.com/netcore2/p/7419045.html
@@ -37,7 +34,7 @@ namespace MysqlConnectionPoolCompare
      */
     public class AutoFacConfig
     {
-        public static IContainer container { get; set; }
+        public static IContainer Container { get; set; }
 
         public AutoFacConfig()
         {
@@ -48,10 +45,12 @@ namespace MysqlConnectionPoolCompare
         {
             var builder = new ContainerBuilder();
 
-            //builder.RegisterType<HtmlParser>()
+            builder.RegisterType<QueryMysqlWithDefault>().Keyed<IExecute>(PoolingTypeEnum.Default);
+            builder.RegisterType<QueryMysqlWithPoolingTrue>().Keyed<IExecute>(PoolingTypeEnum.PoolingTrue);
+            builder.RegisterType<QueryMysqlWithPoolingFalse>().Keyed<IExecute>(PoolingTypeEnum.PoolingFalse);
+            builder.RegisterType<QueryMysqlWithCsPooling>().Keyed<IExecute>(PoolingTypeEnum.CsPooling);
 
-            container = builder.Build();
-            
+            Container = builder.Build(); 
         }
     }
 }

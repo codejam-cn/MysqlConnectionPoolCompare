@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Linq;
 using Autofac;
-using Dapper;
-using MysqlConnectionPoolCompare.Model;
-using MySql.Data.MySqlClient;
-using Autofac.Core;
 
 namespace MysqlConnectionPoolCompare
 {
@@ -13,7 +8,7 @@ namespace MysqlConnectionPoolCompare
     /// </summary>
     public class Program
     {
-        public static int repeatTimes = 10000;
+        public static int repeatTimes = 1000;
 
         private const string connStrDefault = "server=localhost;User Id=sa;password=guest;Database=leyan;Charset=utf8";
         private const string connStrPoolingTrue = "server=localhost;User Id=sa;password=guest;Database=leyan;Charset=utf8;Pooling=true;";
@@ -21,23 +16,27 @@ namespace MysqlConnectionPoolCompare
 
         static void Main(string[] args)
         {
-            //DI
-            var builder = new ContainerBuilder();
+            AutoFacConfig.Register(); //注册
 
-            builder.RegisterType<QueryMysqlWithDefault>().Keyed<IExecute>(PoolingTypeEnum.Default);
-            builder.RegisterType<QueryMysqlWithPoolingTrue>().Keyed<IExecute>(PoolingTypeEnum.PoolingTrue);
-            builder.RegisterType<QueryMysqlWithPoolingFalse>().Keyed<IExecute>(PoolingTypeEnum.PoolingFalse);
-            builder.RegisterType<QueryMysqlWithCsPooling>().Keyed<IExecute>(PoolingTypeEnum.CsPooling);
-            var container = builder.Build(); //可是得到这个是为了干啥呢
 
-            
-
-            using (var scope = container.BeginLifetimeScope())
+            using (var scope = AutoFacConfig.Container.BeginLifetimeScope())
             {
-                var writer = scope.ResolveKeyed<IExecute>(PoolingTypeEnum.PoolingTrue);
-                
+                var queryInstance1 = scope.ResolveKeyed<IExecute>(PoolingTypeEnum.Default);
+                var span1 = queryInstance1.Execute(connStrDefault);
 
-                var defaultSpan = writer.Execute(connStrDefault);
+                var queryInstance2 = scope.ResolveKeyed<IExecute>(PoolingTypeEnum.PoolingTrue);
+                var span2 = queryInstance2.Execute(connStrPoolingTrue);
+
+                var queryInstance3 = scope.ResolveKeyed<IExecute>(PoolingTypeEnum.PoolingFalse);
+                var span3 = queryInstance3.Execute(connStrPoolingFalse);
+
+                var queryInstance4 = scope.ResolveKeyed<IExecute>(PoolingTypeEnum.CsPooling);
+                var span4 = queryInstance4.Execute(connStrDefault);
+
+                Console.WriteLine($"Default = {span1}");
+                Console.WriteLine($"PoolingTrue = {span2}");
+                Console.WriteLine($"PoolingFalse = {span3}");
+                Console.WriteLine($"CsPooling = {span4}");
             }
         }
     }
