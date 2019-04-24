@@ -24,17 +24,17 @@ namespace MysqlConnectionPoolCompare
             //DI
             var builder = new ContainerBuilder();
 
-            builder.RegisterType<QueryMysqlWithDefault>().Named<IExecute>("Default");
-            builder.RegisterType<QueryMysqlWithPoolingTrue>().Named<IExecute>("PoolingTrue");
-            builder.RegisterType<QueryMysqlWithPoolingFalse>().Named<IExecute>("PoolingFalse");
-            builder.RegisterType<QueryMysqlWithCsPooling>().Named<IExecute>("CsPooling");
+            builder.RegisterType<QueryMysqlWithDefault>().Keyed<IExecute>(PoolingTypeEnum.Default);
+            builder.RegisterType<QueryMysqlWithPoolingTrue>().Keyed<IExecute>(PoolingTypeEnum.PoolingTrue);
+            builder.RegisterType<QueryMysqlWithPoolingFalse>().Keyed<IExecute>(PoolingTypeEnum.PoolingFalse);
+            builder.RegisterType<QueryMysqlWithCsPooling>().Keyed<IExecute>(PoolingTypeEnum.CsPooling);
             var container = builder.Build(); //可是得到这个是为了干啥呢
 
             
 
             using (var scope = container.BeginLifetimeScope())
             {
-                var writer = scope.ResolveNamed<IExecute>("PoolingFalse");
+                var writer = scope.ResolveKeyed<IExecute>(PoolingTypeEnum.PoolingTrue);
                 
 
                 var defaultSpan = writer.Execute(connStrDefault);
