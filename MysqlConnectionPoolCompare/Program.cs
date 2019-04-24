@@ -21,6 +21,9 @@ namespace MysqlConnectionPoolCompare
             //DI
             var builder = new ContainerBuilder();
             builder.RegisterType<QueryMysqlWithDefault>().As(typeof(IExecute));
+            builder.RegisterType<QueryMysqlWithPoolingTrue>().As(typeof(IExecute));
+            builder.RegisterType<QueryMysqlWithPoolingFalse>().As(typeof(IExecute));
+            builder.RegisterType<QueryMysqlWithCsPooling>().As(typeof(IExecute));
             var container = builder.Build(); //可是得到这个是为了干啥呢
 
             
